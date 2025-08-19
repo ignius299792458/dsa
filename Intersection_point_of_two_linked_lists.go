@@ -9,59 +9,52 @@ type Node struct {
 }
 
 type SLL struct {
-	head Node
+	head *Node
+	size int
 }
 
 type SLLInterface interface {
 	display()
+	add(value any)
 }
 
-func add(sll *SLL, value any) {
+func (sll *SLL) add(value any) {
+	newNode := &Node{value: value, next: nil}
 
-	// create head
-	if sll.head.next == nil {
-		sll.head.value = value
-		sll.head.next = nil
+	if sll.head == nil {
+		sll.head = newNode
+		sll.size++
 		return
 	}
 
 	currentNode := sll.head
-	var newNode = Node{value: value, next: nil}
 	for currentNode.next != nil {
-		currentNode = *currentNode.next
-		if currentNode.next != nil {
-			currentNode.next = &newNode
-			currentNode = newNode
-		}
-	}
+		currentNode = currentNode.next
+	} // till currentNode.next is nil
+
+	currentNode.next = newNode
+	sll.size++
 }
 
-func NewSLL(values ...any) SLL {
-	var sll SLL
+func NewSLL(values ...any) *SLL {
+	sll := &SLL{head: nil, size: 0}
 	for _, value := range values {
-		fmt.Printf("Appending %v->", value)
-		add(&sll, value)
-		sll.display()
+		sll.add(value)
 	}
 	return sll
 }
 
 func (sll *SLL) display() {
-	fmt.Println("\nSLL : ", sll)
-	currentNode := sll.head
-	for currentNode.next != nil {
-		fmt.Printf("%v->", currentNode.value)
-		currentNode = *currentNode.next
+	for currentNode := sll.head; currentNode.next != nil; {
+		fmt.Printf(" %v|%v ->", currentNode.value, currentNode.next)
+		currentNode = currentNode.next
 	}
+	fmt.Println("\nSize: ", sll.size)
 }
 
 func main() {
-	// create 2 sll
-	// 1. sll
-	sll1 := NewSLL(1, 2, 3, 6, 5, 6)
+	sll1 := NewSLL(1, 2, 3, 4, 5, 6)
 	sll1.display()
-	// sll2 := NewSLL(30, 31, 32, 35, 37, 43)
-	// sll2.display()
-
-	// make intersection of them
+	sll2 := NewSLL(7, 8, 9, 10, 11)
+	sll2.display()
 }
