@@ -1,6 +1,26 @@
 package main
 
-import "fmt"
+/*
+------------------------------------------------
+********* Example : 1 *********
+---
+   A:  1 → 2 → 3
+                 ↘
+                   7 → 8 → null
+                 ↗
+   B:       4 → 5
+
+------------------------------------------------
+********* Example : 2 *********
+---
+List A:  1 → 2 → 3 → 4 → null
+List B:  1 → 2 → 3 → 4 → null
+------------------------------------------------
+*/
+
+import (
+	"fmt"
+)
 
 // create singly linked list
 type Node struct {
@@ -16,6 +36,8 @@ type SLL struct {
 type SLLInterface interface {
 	display()
 	add(value any)
+	intersectionPointWith(sll *SLL) *Node
+	interMixPointRef(sll *SLL)
 }
 
 func (sll *SLL) add(value any) {
@@ -52,9 +74,30 @@ func (sll *SLL) display() {
 	fmt.Println("\nSize: ", sll.size)
 }
 
+// intersectionPointWith
+func (thisSLL *SLL) intersectionPointWith(sll *SLL) *Node {
+
+	outerCurrentNode := thisSLL.head
+	for outerCurrentNode.next != nil {
+
+		// check if same reference found in given sll
+		for innerCurrentNode := sll.head; innerCurrentNode.next != nil; {
+			if outerCurrentNode.next == innerCurrentNode.next {
+				return outerCurrentNode.next // this is the intersection point
+			}
+			innerCurrentNode = innerCurrentNode.next
+		}
+		outerCurrentNode = outerCurrentNode.next
+	}
+	return nil
+}
+
 func main() {
-	sll1 := NewSLL(1, 2, 3, 4, 5, 6)
+	sll1 := NewSLL(1, 2, 3, 6, 7)
 	sll1.display()
-	sll2 := NewSLL(7, 8, 9, 10, 11)
+	sll2 := NewSLL(4, 5, 6, 7)
 	sll2.display()
+
+	// intersection point of sll1 and sll2
+	fmt.Println("\n->>> intersection point of sll1 and sll2: ", sll1.intersectionPointWith(sll2))
 }
